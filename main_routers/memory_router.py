@@ -53,6 +53,10 @@ def validate_catgirl_name(name: str) -> tuple[bool, str]:
     if os.path.sep in name or '/' in name or '\\' in name or '..' in name:
         return False, "名称不能包含路径分隔符或目录遍历字符"
     
+    # Reject dots to prevent issues with memory file creation
+    if '.' in name:
+        return False, "名称不能包含点号(.)"
+    
     return True, ""
 
 
@@ -361,6 +365,7 @@ async def update_catgirl_name(request: Request):
                             f"{old_name}:",     # 纯冒号
                             f"{old_name}->",    # 箭头
                             f"[{old_name}]",    # 方括号
+                            f"{old_name} | ",   # 摘要中的角色标识格式
                         ]
                         
                         for pattern in patterns:
